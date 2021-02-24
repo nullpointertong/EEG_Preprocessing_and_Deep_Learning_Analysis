@@ -93,7 +93,7 @@ function preprocessingWithoutArtifactRejection(datasetName)
     [ALLEEG EEG CURRENTSET] = pop_newset(ALLEEG, EEG, 1,'overwrite','on','gui','off'); 
    
     EEG = eeg_checkset( EEG );
-    EEG = pop_epoch( EEG, {  '248'  }, [-0.1         0.8], 'newname', append(datasetName, ' Square'), 'epochinfo', 'yes');
+    EEG = pop_epoch( EEG, {  '248'  }, [-0.1         0.6], 'newname', append(datasetName, ' Square'), 'epochinfo', 'yes');
     [ALLEEG EEG CURRENTSET] = pop_newset(ALLEEG, EEG, 1,'gui','off'); 
         
     EEG = eeg_checkset( EEG );
@@ -117,7 +117,7 @@ function preprocessingWithoutArtifactRejection(datasetName)
 %     extractEpochs(EEG, ALLEEG, CURRENTSET, datasetName, '248', n, 'Square',processedFilePath);
 %     
     EEG = eeg_checkset( EEG );
-    EEG = pop_epoch( EEG, {  '28'  }, [-0.1         0.8], 'newname', append(datasetName, ' Random'), 'epochinfo', 'yes');
+    EEG = pop_epoch( EEG, {  '28'  }, [-0.1         0.6], 'newname', append(datasetName, ' Random'), 'epochinfo', 'yes');
     [ALLEEG EEG CURRENTSET] = pop_newset(ALLEEG, EEG, 1,'gui','off');
         
     
@@ -168,7 +168,7 @@ function preprocessingWithoutArtifactRejection(datasetName)
     [ALLEEG EEG CURRENTSET] = pop_newset(ALLEEG, EEG, lastData,'retrieve',1,'study',0); 
     
     EEG = eeg_checkset( EEG );
-    EEG = pop_epoch( EEG, {  }, [-0.1         0.8], 'newname', datasetName, 'epochinfo', 'yes');
+    EEG = pop_epoch( EEG, {  }, [-0.1         0.6], 'newname', datasetName, 'epochinfo', 'yes');
     [ALLEEG EEG CURRENTSET] = pop_newset(ALLEEG, EEG, 1,'overwrite','on','gui','off');
     
     EEG = eeg_checkset( EEG );

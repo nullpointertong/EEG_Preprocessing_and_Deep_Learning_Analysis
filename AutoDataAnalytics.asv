@@ -13,7 +13,7 @@ function start()
 %                  try
 %                     fprintf(stringID + "\n");
 %                     %eegPreprop(stringID);
-%                     preprocessingWithoutArtifactRejection(stringID);
+%                     preprocessingWithoutArtifactRejection(stringID,false);
 %                  catch
 %                      continue
 %                  end
@@ -21,7 +21,7 @@ function start()
 %     end
 
 %%eegPreprop('22_1');
-preprocessingWithoutArtifactRejection('15_3');
+preprocessingWithoutArtifactRejection('15_3',false);
 % %replaceEvents('02_1');
 %     exportEpochtoCsv('09_1 Square','Aware');
 %     exportEpochtoCsv('10_1 Square','Aware');
@@ -45,7 +45,7 @@ preprocessingWithoutArtifactRejection('15_3');
     
 end
 
-function preprocessingWithoutArtifactRejection(datasetName)
+function preprocessingWithoutArtifactRejection(datasetName,exportToCsv)
     %Path to raw unprocessed files
     rawFilePath = 'C:\\Users\\auzri\\Desktop\\UTS\\UTS\\Research\\Data\\Raw\\';
     %Path to Channel Location Files
@@ -105,11 +105,16 @@ function preprocessingWithoutArtifactRejection(datasetName)
     
     if(datasetName(4) == '3')
         [ALLEEG EEG CURRENTSET] = extractEpochs(EEG, ALLEEG, CURRENTSET, datasetName, '18', 4, 'Diamond', processedFilePath);
+        
+        if(exportToCsv)
+            exportEpochtoCsv( append(datasetName,' ' , 'Diamond' ,'.set') ,awareTag);
+        end
     end
     
-    %exportEpochtoCsv(datasetName,awareTag);
-    %exportEpochtoCsv(datasetName,awareTag);
-    %exportEpochtoCsv(datasetName,awareTag);
+    if(exportToCsv)
+        exportEpochtoCsv( append(datasetName,' ' , 'Square' ,'.set') ,awareTag);
+        exportEpochtoCsv( append(datasetName,' ' , 'Random' ,'.set') ,awareTag);
+    end
     
     %pop_export(EEG, append(csvFilePath, datasetName,'.csv'),'transpose','on','separator',',','precision',1);
 end
@@ -141,19 +146,11 @@ function eegPreprop(datasetName)
     
     [ALLEEG EEG CURRENTSET ALLCOM] = eeglab;
     
-%     EEG = pop_fileio(append(rawFilePath, datasetName, '.raw'), 'dataformat','auto');
-%     [ALLEEG EEG CURRENTSET] = pop_newset(ALLEEG, EEG, 0,'setname',datasetName,'gui','off'); 
-    
     EEG = pop_loadset('filename', append(datasetName, '.set'),'filepath',processedFilePath);
     [ALLEEG, EEG, CURRENTSET] = eeg_store( ALLEEG, EEG, 0 );
     EEG=pop_chanedit(EEG, 'lookup',channelLocationPath);
     [ALLEEG EEG] = eeg_store(ALLEEG, EEG, CURRENTSET);
     
-%      EEG = eeg_checkset( EEG );
-%      EEG = pop_rmbase( EEG, [],[]);
-%      [ALLEEG EEG CURRENTSET] = pop_newset(ALLEEG, EEG, 1,'overwrite','on','gui','off'); 
-    
- 
     EEG = eeg_checkset( EEG );
     EEG = pop_firma(EEG, 'forder', 2);
     EEG = pop_eegfiltnew(EEG, 'locutoff',0.5305164,'plotfreqz',0);
@@ -163,10 +160,6 @@ function eegPreprop(datasetName)
     EEG = pop_firma(EEG, 'forder', 2);
     EEG = pop_eegfiltnew(EEG, 'hicutoff',30,'plotfreqz',0);
     [ALLEEG EEG CURRENTSET] = pop_newset(ALLEEG, EEG, 1,'overwrite','on','gui','off'); 
-    
-%     EEG = eeg_checkset( EEG );
-%     EEG = pop_eegfiltnew(EEG, 'locutoff',45,'hicutoff',55,'revfilt',1,'plotfreqz',1);
-%     [ALLEEG EEG CURRENTSET] = pop_newset(ALLEEG, EEG, 1,'overwrite','on','gui','off'); 
     
     EEG = eeg_checkset( EEG );
     EEG = pop_clean_rawdata(EEG, 'FlatlineCriterion','off','ChannelCriterion','off','LineNoiseCriterion','off','Highpass','off','BurstCriterion',20,'WindowCriterion',0.25,'BurstRejection','on','Distance','Euclidian','WindowCriterionTolerances',[-100 100] );
@@ -252,6 +245,7 @@ function eegPreprop(datasetName)
     [ALLEEG EEG CURRENTSET] = pop_newset(ALLEEG, EEG, 1,'savenew',append(processedFilePath, datasetName,'.set'),'overwrite','on','gui','off'); 
     %exportEpochtoCsv(datasetName,awareTag);
     %pop_export(EEG, append(csvFilePath, datasetName, '_', awareTag, '.csv'),'transpose','on','separator',',','precision',1);
+    end
 end
 
 function [ALLEEG EEG CURRENTSET] = extractEpochs(EEG, ALLEEG, CURRENTSET, datasetName, eventCode, datasetNumber, type,processedFilePath)
